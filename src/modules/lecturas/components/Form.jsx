@@ -10,6 +10,8 @@ import { Editor } from "primereact/editor";
 import { medidorList} from "./../../../utils/listForm";
 import { useRef, useState } from "react";
 import { Toast } from "primereact/toast";
+import { formatearFecha } from "../../../utils/fomatearFecha";
+import { medidorList, tipoMedidaList} from "./../../../utils/listForm";
 
 
 function Form ({onCreateLectura = (lectura) => {}}) {
@@ -41,44 +43,41 @@ function Form ({onCreateLectura = (lectura) => {}}) {
 
     const validarFormulario = () => {
         const errores = []
-        if(fechaHora == '' || fechaHora == null){
-            errores.push('El campo fecha no es valido.')
+        if (!fechaHora || !(fechaHora instanceof Date)) {
+            errores.push("El campo fecha no es válido.");
         }
         if(medidor == '' || medidor == null){
-            errores.push('El campo medidor no es valido.')
+            errores.push('El campo medidor no es válido.')
         }
         if(direccion == '' || direccion == null){
-            errores.push('El campo dirección no es valido.')
+            errores.push('El campo dirección no es válido.')
         }
         if(valor < 0 || valor > 500){
-            errores.push('El campo valor no es valido.')
+            errores.push('El campo valor no es válido.')
         }
          if(tipoMedida == '' || tipoMedida == null){
-            errores.push('El campo tipo de medida no es valido.')
+            errores.push('El campo tipo de medida no es válido.')
         }
 
-        toast.current.show({
-            severity: "error",
-            summary: "Errores",
-            content: () => (
-                <div className="flex flex-column gap-1" style={{ flex: 1 }}>
-                    <p>Errores</p>
-                    {errores.map((e, idx) => (
-                        <div key={idx}>• {e}</div>
-                    ))}
-                </div>
-            )
-        });
+       if(errores.length > 0){
+            toast.current.show({
+                severity: "error",
+                summary: "Errores",
+                content: () => (
+                    <div className="flex flex-column gap-1" style={{ flex: 1 }}>
+                        <p>Errores</p>
+                        {errores.map((e, idx) => (
+                            <div key={idx}>• {e}</div>
+                        ))}
+                    </div>
+                )
+            });
+            return null;
+        }
 
 
         return {
-            fechaHora: fechaHora.toLocaleString("es-CL", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-            }),
+            fechaHora: formatearFecha(fechaHora),
             medidor,
             direccion,
             valor,
@@ -89,16 +88,16 @@ function Form ({onCreateLectura = (lectura) => {}}) {
         <>
             <Toast ref={toast} />
             <div className="d-flex flex-column align-items-start mb-3 gap-2">
-                <label htmlFor="form-dia">Fecha y Hora</label>
-                <Calendar id="calendar-12h" value={fechaHora} onChange={(e) => setFechaHora(e.value)} showTime hourFormat="24" dateFormat="dd-m-yy" />  
+                <label htmlFor="calendar-24h">Fecha y Hora</label>
+                <Calendar id="calendar-24h" value={fechaHora} onChange={(e) => setFechaHora(e.value)} showTime hourFormat="24" dateFormat="dd-mm-yy" placeholder="dd-MM-yyyy HH:mm" />
             </div>
             <div className="d-flex flex-column align-items-start mb-3 gap-2">
-                <label htmlFor="form-dia">Medidor</label>
-                <Dropdown className='w-100' id="form-dia" value={medidor} onChange={e=>setMedidor(e.value)} options={medidorList} optionLabel="dia"
+                <label htmlFor="form-medidor">Medidor</label>
+                <Dropdown className='w-100' id="form-medidor" value={medidor} onChange={e=>setMedidor(e.value)} options={medidorList} optionLabel="medidor"
                     placeholder="Seleccionar un medidor" checkmark={true} highlightOnSelect={false}/>
             </div>
             <div className="d-flex flex-column align-items-start mb-3 gap-2">
-                <label htmlFor="form-dia">Dirección</label>
+                <label htmlFor="form-direccion">Dirección</label>
                 <Editor value={direccion} onTextChange={(e) => setDireccion(e.htmlValue)} style={{ height: '120px' }} />
             </div>
             <div className="d-flex flex-column  mb-3 gap-2">
@@ -113,18 +112,20 @@ function Form ({onCreateLectura = (lectura) => {}}) {
                 <div className="card flex justify-content-center">
                 <div className="flex flex-wrap gap-3">
                     <label className="text-start" htmlFor="nombre-rango-txt">Tipo de Medida</label>
-                    <div className="flex align-items-center">
-                        <RadioButton inputId="tipoMedida1" name="pizza" value="Kilowatts" onChange={(e) => setTipoMedida(e.value)} checked={tipoMedida === 'Kilowatts'} />
-                        <label htmlFor="tipoMedida1" className="ml-2">Kilowatts</label>
-                    </div>
-                    <div className="flex align-items-center">
-                        <RadioButton inputId="tipoMedida2" name="pizza" value="Mushroom" onChange={(e) => setTipoMedida(e.value)} checked={tipoMedida === 'Mushroom'} />
-                        <label htmlFor="tipoMedida2" className="ml-2">Mushroom</label>
-                    </div>
-                    <div className="flex align-items-center">
-                        <RadioButton inputId="tipoMedida3" name="pizza" value="Temperatura" onChange={(e) => setTipoMedida(e.value)} checked={tipoMedida === 'Temperatura'} />
-                        <label htmlFor="tipoMedida3" className="ml-2">Temperatura</label>
-                    </div>
+                    {tipoMedidaList.map((item, index) => (
+                        <div className="flex align-items-center" key={index}>
+                            <RadioButton
+                                inputId={`tipoMedida${index}`}
+                                name="tipoMedida"
+                                value={item.nombre}
+                                checked={tipoMedida === item.nombre}
+                                onChange={(e) => setTipoMedida(e.value)}
+                            />
+                            <label htmlFor={`tipoMedida${index}`} className="ml-2">
+                                {item.nombre}
+                            </label>
+                        </div>
+                    ))}
                 </div>
             </div>
             </div>

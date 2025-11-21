@@ -7,6 +7,13 @@ export default function Navbar() {
     let navigate = useNavigate();
     const items = [
         {
+            label: 'Inicio',
+            icon: 'pi pi-link',
+            command: () => {
+                navigate("/");
+            }
+        },
+        {
             label: 'Registrar Lecturas',
             icon: 'pi pi-link',
             command: () => {

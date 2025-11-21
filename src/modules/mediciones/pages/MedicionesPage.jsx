@@ -4,6 +4,7 @@ import { getLecturas, removeLectura } from "../../../services/LecturasServices";
 import { useEffect, useState } from "react";
 import {Dropdown} from 'primereact/dropdown';
 import { tipoMedidaList } from "../../../utils/listForm";
+import { Button } from 'primereact/button';
 
 export function MedicionesPage (){
 
@@ -15,13 +16,10 @@ export function MedicionesPage (){
         reiniciarDatos()
     },[])
 
-    useEffect(() => {
-        if (filtro == null) {
-            setMediciones(medicionesOriginales);
-        } else {
-            setMediciones(medicionesOriginales.filter(me => me.tipoMedida === filtro));
-        }
-    }, [filtro, medicionesOriginales]);
+    const activarFiltro = () => {
+        if(filtro == null) return false;
+        setMediciones(medicionesOriginales.filter(me => me.tipoMedida === filtro));
+    }
 
     const borrarFiltro = () => {
         setFiltro(null);
@@ -35,7 +33,6 @@ export function MedicionesPage (){
     }
 
     const eliminarLectura = (lectura) => {
-        console.log("asdasd");
         removeLectura(lectura);
         reiniciarDatos()
     }
@@ -43,11 +40,12 @@ export function MedicionesPage (){
     return (
         <>
         <div className="d-flex flex-column gap-2 mb-2">
-            <label className="text-start" htmlFor="form-pelicula">Filtro por película</label>
+            <label className="text-start" htmlFor="form-tipo-medida">Filtro por tipo de medida</label>
             <div className="d-flex gap-2">
-                <Dropdown className='w-100' id="form-pelicula" value={filtro} onChange={e=>setFiltro(e.value)} options={tipoMedidaList.map(p => p.nombre)} optionLabel="dia"
-                    placeholder="Selecciona una pelicula" checkmark={true} highlightOnSelect={false}/>
-                <p onClick={borrarFiltro}>Limpiar</p>
+                <Dropdown className='w-100' id="form-tipo-medida" value={filtro} onChange={e=>setFiltro(e.value)} options={tipoMedidaList.map(p => p.nombre)} optionLabel="dia"
+                    placeholder="Selecciona una tipo de medida" checkmark={true} highlightOnSelect={false}/>
+                <Button label="Filtrar" severity="primary" onClick={activarFiltro}></Button>
+                <Button label="Limpiar" severity="warning" onClick={borrarFiltro}></Button>
             </div>
         </div>
         <MedicionesTable lecturas={mediciones} removeLectura={eliminarLectura}/>

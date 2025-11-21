@@ -1,7 +1,6 @@
 
 import {DataTable} from 'primereact/datatable';
 import {Column} from 'primereact/column';
-import {Dropdown} from 'primereact/dropdown';
 import { Button } from 'primereact/button';
 import { tipoMedidaList } from '../../../utils/listForm';
 
