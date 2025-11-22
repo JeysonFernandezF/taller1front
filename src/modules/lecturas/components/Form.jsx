@@ -10,8 +10,8 @@ import { Editor } from "primereact/editor";
 import { medidorList} from "./../../../utils/listForm";
 import { useRef, useState } from "react";
 import { Toast } from "primereact/toast";
-import { formatearFecha } from "../../../utils/fomatearFecha";
-import { medidorList, tipoMedidaList} from "./../../../utils/listForm";
+import { tipoMedidaList} from "./../../../utils/listForm";
+import { formatearFecha } from "../../../utils/formatearFecha";
 
 
 function Form ({onCreateLectura = (lectura) => {}}) {

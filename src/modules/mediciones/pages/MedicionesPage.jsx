@@ -1,13 +1,14 @@
 import MedicionesTable from "../components/MedicionesTable";
 
 import { getLecturas, removeLectura } from "../../../services/LecturasServices";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {Dropdown} from 'primereact/dropdown';
 import { tipoMedidaList } from "../../../utils/listForm";
 import { Button } from 'primereact/button';
+import { Toast } from "primereact/toast";
 
 export function MedicionesPage (){
-
+    const toast = useRef(null);
     const [mediciones, setMediciones] = useState([])
     const [medicionesOriginales, setMedicionesOriginales] = useState([])
     const [filtro, setFiltro] = useState(null);
@@ -35,10 +36,16 @@ export function MedicionesPage (){
     const eliminarLectura = (lectura) => {
         removeLectura(lectura);
         reiniciarDatos()
+
+        toast.current.show({
+            severity: "success",
+            summary: "Medición eliminada",
+        });
     }
 
     return (
         <>
+        <Toast ref={toast} />
         <div className="d-flex flex-column gap-2 mb-2">
             <label className="text-start" htmlFor="form-tipo-medida">Filtro por tipo de medida</label>
             <div className="d-flex gap-2">
